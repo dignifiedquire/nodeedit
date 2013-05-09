@@ -1,0 +1,17 @@
+{
+  "name": "nodeedit",
+  "version": "0.0.0",
+  "description": "Simple file editing in the cloud.",
+  "main": "server.js",
+  "repository": "",
+  "author": "Friedel Ziegelmayer <dignifiedquire@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "ecstatic": "~0.4.2",
+    "browserify": "~2.13.3",
+    "dnode": "~1.0.5",
+    "shoe": "0.0.10",
+    "hyperglue": "~0.2.1",
+    "ace-browserify": "~1.0.0"
+  }
+}

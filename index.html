@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>NodeEdit</title>
+  <link type="text/css" rel="stylesheet" href="//cdn.jsdelivr.net/foundation/4.1.2/css/foundation.min.css" />
+  <link type="text/css" rel="stylesheet" href="//cdn.jsdelivr.net/foundation/4.1.2/css/normalize.css" />
+  <style type="text/css">
+    #editor {
+      min-height: 500px;
+      min-width: 600px;
+      width: 100%;
+      height: 100%;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header and Nav -->
+  <nav class="top-bar">
+    <ul class="title-area">
+      <!-- Title Area -->
+      <li class="name">
+        <h1><a href="#">NodeEdit</a></h1>
+      </li>
+    </ul>
+  </nav>
+  <!-- End Header and Nav -->
+
+
+  <div class="row">
+    <!-- Main Content Section -->
+    <div class="large-9 push-3 columns">
+
+      <h3 id="title">Document.js</h3>
+      <div id="editor">
+        function foo(items) {
+          var x = "All this is syntax highlighted";
+        return x;
+      }</div>
+      <a href="#" id="save" class="button">Save</a>
+    </div>
+
+
+    <!-- Nav Sidebar -->
+    <!-- This is source ordered to be pulled to the left on larger screens -->
+    <div class="large-3 pull-9 columns">
+      <h3>Your Files</h3>
+      <ul id="list" class="side-nav">
+      </ul>
+
+
+    </div>
+
+  </div>
+
+
+  <!-- Footer -->
+
+  <footer class="row">
+    <div class="large-12 columns">
+      <hr />
+      <p>&copy; Friedel Ziegelmayer 2013.</p>
+    </div>
+  </footer>
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.0.0/jquery-2.0.0.min.js"></script>
+  <script src="http://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+  <script src="client.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>
