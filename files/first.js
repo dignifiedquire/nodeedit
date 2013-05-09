@@ -1,5 +1,8 @@
 // Welcome to node
-var func = function(err, callback) {
-  edit();
-  callback();
+// Here we create more awesome stuff than you can imagine
+
+var awesome = function() {
+    return 'We are awesome';
 };
+
+console.log(awesome());

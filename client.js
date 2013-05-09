@@ -4,9 +4,23 @@ var shoe = require('shoe');
 
 var remote, editor;
 var list = $('#list');
-var heading = $('#title');
+var heading = $('#title input');
 var safeButton = $('#save');
-var currentFile = '';
+var newButton = $('#new');
+var currentFile = 'new.js';
+
+// Set current file
+var setCurrentFile = function(name) {
+  currentFile = name;
+
+  // Set heading
+  heading.val(name);
+};
+
+// Update the current file from the input
+var updateCurrentFile = function() {
+  setCurrentFile(heading.val());
+};
 
 // Update the displayed file given a filename
 var updateFile = function(filename) {
@@ -15,54 +29,63 @@ var updateFile = function(filename) {
       return console.log(error);
     }
     // Set ACE values
-    editor.setValue(content.toString());
+    editor.session.setValue(content.toString());
     editor.gotoLine(1);
 
-    // Set heading
-    heading.html(filename);
-
     // Set current file
-    currentFile = filename;
+    setCurrentFile(filename);
   });
-
 };
 
 // Save the current file
-var saveFile = function(event) {
-  event.preventDefault();
+var saveFile = function() {
+  updateCurrentFile();
+
   if (!currentFile || currentFile === '') {
     return console.error('No file activated');
   }
   console.log('Saving: ' + currentFile);
-  remote.writeFile(currentFile, editor.getValue(), function(error) {
+  remote.writeFile(currentFile, editor.session.getValue(), function(error) {
     if (error) {
       return console.error(error);
     }
     console.log('Saved successfully');
+    updateList();
   });
 };
 
+// Create a new file
+var newFile = function() {
+  editor.session.setValue('');
+  setCurrentFile('');
+};
+
 // Update the displayed list of files
-var updateList = function(files) {
+var updateList = function() {
   console.log('Updating list');
+  remote.readdir(function(error, files) {
+    if (error) {
+      return console.error(error);
+    }
+    console.log(files);
 
-  // Clean list
-  list.innerHtml = '';
+    // Clean list
+    list.html('');
 
-  // Add new content
-  files.forEach(function(file) {
-    var item = '<li><a href="' + file + '">' + file + '</a></li>';
-    list.append(item);
+    // new content
+    files.forEach(function(file) {
+      var item = '<li><a href="' + file + '">' + file + '</a></li>';
+      list.append(item);
+    });
+
+    // Add event listener to file list
+    $('#list a').click(function(event) {
+      event.preventDefault();
+      var filename = $(this).attr('href');
+      console.log(event, this);
+      updateFile(filename);
+    });
   });
-
-  // Add event listener to file list
-  $('#list a').click(function(event) {
-    event.preventDefault();
-    var filename = $(this).attr('href');
-    console.log(event, this);
-    updateFile(filename);
-  });
-
 };
 
 $(function() {
@@ -78,16 +101,20 @@ $(function() {
   d.on('remote', function(r) {
     console.log('Connected on /dnode');
     remote = r;
-    remote.readdir(function(error, files) {
-      if (error) {
-        return console.log(error);
-      }
-      console.log(files);
-      updateList(files);
+
+    updateList();
+
+    // Setup safe button
+    safeButton.click(function(event) {
+      event.preventDefault();
+      saveFile();
     });
 
     // Setup safe button
-    safeButton.click(saveFile);
+    newButton.click(function(event) {
+      event.preventDefault();
+      newFile();
+    });
   });
   d.pipe(stream).pipe(d);
 });
