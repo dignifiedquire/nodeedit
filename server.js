@@ -10,6 +10,8 @@ var ecstatic = require('ecstatic')(__dirname);
 var dnode = require('dnode');
 var shoe = require('shoe');
 
+// Constants
+var basePath = path.join(__dirname, 'files');
 
 
 // Handle incoming requests
@@ -18,22 +20,28 @@ var serve = function(req, resp) {
 
   // Browserify client.js
   if (parsed.pathname === '/client.js') {
-    bfy = browserify(path.join(__dirname, 'client.js'));
+    // Create browserify bundle
+    var bfy = browserify(path.join(__dirname, 'client.js'));
+
     // Set content headers
     resp.statusCode = 200;
     resp.setHeader('content-type', 'text/javascript');
+
+    // Pipe finished bundle to the response
     bfy.bundle({debug: true}).pipe(resp);
     return;
   }
 
-  // Static files
+  // Serve static files
   ecstatic(req, resp);
 };
 
-var basePath = path.join(__dirname, 'files');
 
-// Setup dnode
+// Setup rpc with dnode
 var sock = shoe(function (stream) {
+
+  // Publish available methods
+  // We just mirror some basic fs methods from Node
   var d = dnode({
     readdir: function(callback) {
       fs.readdir(basePath, callback);
@@ -48,6 +56,7 @@ var sock = shoe(function (stream) {
     }
   });
 
+  // Pipe dnode to the shoe stream for setup
   d.pipe(stream).pipe(d);
 });
 

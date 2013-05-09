@@ -1,4 +1,4 @@
-var hyperglue = require('hyperglue');
+// External dependencies
 var dnode = require('dnode');
 var shoe = require('shoe');
 
@@ -8,6 +8,7 @@ var heading = $('#title');
 var safeButton = $('#save');
 var currentFile = '';
 
+// Update the displayed file given a filename
 var updateFile = function(filename) {
   remote.readFile(filename, function(error, content) {
     if (error) {
@@ -26,20 +27,24 @@ var updateFile = function(filename) {
 
 };
 
+// Save the current file
 var saveFile = function(event) {
   event.preventDefault();
+  if (!currentFile || currentFile === '') {
+    return console.error('No file activated');
+  }
   console.log('Saving: ' + currentFile);
   remote.writeFile(currentFile, editor.getValue(), function(error) {
     if (error) {
-      return console.log(error);
+      return console.error(error);
     }
     console.log('Saved successfully');
   });
 };
 
+// Update the displayed list of files
 var updateList = function(files) {
   console.log('Updating list');
-
 
   // Clean list
   list.innerHtml = '';
@@ -86,10 +91,3 @@ $(function() {
   });
   d.pipe(stream).pipe(d);
 });
-
-
-
-
-
-
-
