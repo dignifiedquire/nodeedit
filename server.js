@@ -6,7 +6,6 @@ var fs = require('fs');
 
 // Third party modules
 var browserify = require('browserify');
-var ecstatic = require('ecstatic')(__dirname);
 var dnode = require('dnode');
 var shoe = require('shoe');
 
@@ -15,7 +14,7 @@ var basePath = path.join(__dirname, 'files');
 
 
 // Handle incoming requests
-var serve = function(req, resp) {
+var serve = function(req, res) {
   var parsed = url.parse(req.url);
 
   // Browserify client.js
@@ -24,16 +23,32 @@ var serve = function(req, resp) {
     var bfy = browserify(path.join(__dirname, 'client.js'));
 
     // Set content headers
-    resp.statusCode = 200;
-    resp.setHeader('content-type', 'text/javascript');
+    res.statusCode = 200;
+    res.setHeader('content-type', 'text/javascript');
 
     // Pipe finished bundle to the response
-    bfy.bundle({debug: true}).pipe(resp);
+    bfy.bundle({debug: true}).pipe(res);
     return;
   }
 
-  // Serve static files
-  ecstatic(req, resp);
+  // Serve index.html
+  if (parsed.pathname === '/index.html' || parsed.pathname === '/') {
+    // Set content headers
+    res.statusCode = 200;
+    res.setHeader('content-type', 'text/html');
+
+    // Pipe the file to the response
+    fs.createReadStream(path.join(__dirname, 'index.html')).pipe(res);
+
+    return;
+  }
+
+  // Serve 404
+  res.statusCode = 400;
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.write('404 Not Found\n');
+  res.end();
+  return;
 };
 
 

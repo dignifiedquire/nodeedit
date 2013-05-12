@@ -104,6 +104,7 @@ $(function() {
 
     updateList();
 
+
     // Setup safe button
     safeButton.click(function(event) {
       event.preventDefault();
