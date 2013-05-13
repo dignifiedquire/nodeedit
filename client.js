@@ -88,6 +88,26 @@ var updateList = function() {
   });
 };
 
+var setup = function(r) {
+  console.log('Connected on /dnode');
+  remote = r;
+
+  updateList();
+
+  // Setup safe button
+  safeButton.click(function(event) {
+    event.preventDefault();
+    saveFile();
+  });
+
+  // Setup safe button
+  newButton.click(function(event) {
+    event.preventDefault();
+    newFile();
+  });
+};
+
+
 $(function() {
   // Inititalize ACE
   editor = ace.edit('editor');
@@ -98,24 +118,6 @@ $(function() {
   var stream = shoe('/dnode');
   var d = dnode();
 
-  d.on('remote', function(r) {
-    console.log('Connected on /dnode');
-    remote = r;
-
-    updateList();
-
-
-    // Setup safe button
-    safeButton.click(function(event) {
-      event.preventDefault();
-      saveFile();
-    });
-
-    // Setup safe button
-    newButton.click(function(event) {
-      event.preventDefault();
-      newFile();
-    });
-  });
+  d.on('remote', setup);
   d.pipe(stream).pipe(d);
 });
